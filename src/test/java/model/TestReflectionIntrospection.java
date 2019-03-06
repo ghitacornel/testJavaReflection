@@ -9,24 +9,23 @@ import org.junit.Test;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TestReflectionIntrospection {
 
-    final private Object model = new SimpleClass();
+    final private Object object = new SimpleClass();
 
     @Test
     public void testGetClass() {
-        Assert.assertEquals(SimpleClass.class, model.getClass());
+        Assert.assertEquals(SimpleClass.class, object.getClass());
     }
 
     @Test
     public void testGetClassAnnotations() {
-        Assert.assertEquals(1, model.getClass().getAnnotations().length);
-        Annotation annotation = model.getClass().getAnnotations()[0];
+        Assert.assertEquals(1, object.getClass().getAnnotations().length);
+        Annotation annotation = object.getClass().getAnnotations()[0];
         Assert.assertEquals(SimpleAnnotation.class, annotation.annotationType());
         SimpleAnnotation simpleAnnotation = (SimpleAnnotation) annotation;
         Assert.assertEquals(2, simpleAnnotation.specialValue());
@@ -35,20 +34,20 @@ public class TestReflectionIntrospection {
     @Test
     public void testGetClassInterfaces() {
 
-        Assert.assertEquals(2, model.getClass().getInterfaces().length);
-        Assert.assertEquals(SimpleInterface.class, model.getClass().getInterfaces()[0]);
-        Assert.assertEquals(SimpleTypedInterface.class, model.getClass().getInterfaces()[1]);
+        Assert.assertEquals(2, object.getClass().getInterfaces().length);
+        Assert.assertEquals(SimpleInterface.class, object.getClass().getInterfaces()[0]);
+        Assert.assertEquals(SimpleTypedInterface.class, object.getClass().getInterfaces()[1]);
 
-        Assert.assertEquals(2, model.getClass().getGenericInterfaces().length);
-        Assert.assertEquals(SimpleInterface.class, model.getClass().getGenericInterfaces()[0]);
-        Assert.assertEquals("model.interfaces.SimpleTypedInterface<java.lang.Integer>", model.getClass().getGenericInterfaces()[1].getTypeName());
+        Assert.assertEquals(2, object.getClass().getGenericInterfaces().length);
+        Assert.assertEquals(SimpleInterface.class, object.getClass().getGenericInterfaces()[0]);
+        Assert.assertEquals("model.interfaces.SimpleTypedInterface<java.lang.Integer>", object.getClass().getGenericInterfaces()[1].getTypeName());
 
     }
 
     @Test
     public void testGetClassInterfaceType() {
 
-        Type type = model.getClass().getGenericInterfaces()[1];
+        Type type = object.getClass().getGenericInterfaces()[1];
         ParameterizedType parameterizedType = (ParameterizedType) type;
         Assert.assertEquals("model.interfaces.SimpleTypedInterface<java.lang.Integer>", parameterizedType.getTypeName());
         Assert.assertEquals("java.lang.Integer", parameterizedType.getActualTypeArguments()[0].getTypeName());
@@ -58,26 +57,26 @@ public class TestReflectionIntrospection {
 
     @Test
     public void testGetClassDeclaredConstructors() {
-        Assert.assertEquals(2, model.getClass().getDeclaredConstructors().length);
+        Assert.assertEquals(2, object.getClass().getDeclaredConstructors().length);
 
         // no argument constructor
-        Assert.assertEquals(0, model.getClass().getDeclaredConstructors()[0].getParameterCount());
+        Assert.assertEquals(0, object.getClass().getDeclaredConstructors()[0].getParameterCount());
 
         // with argument private and annotated constructor
-        Assert.assertEquals(1, model.getClass().getDeclaredConstructors()[1].getParameterCount());
-        Assert.assertEquals("java.lang.String", model.getClass().getDeclaredConstructors()[1].getParameterTypes()[0].getTypeName());
-        Assert.assertEquals(1, model.getClass().getDeclaredConstructors()[1].getAnnotations().length);
-        Assert.assertEquals(SimpleAnnotation.class, model.getClass().getDeclaredConstructors()[1].getAnnotations()[0].annotationType());
-        Assert.assertEquals(4, ((SimpleAnnotation) model.getClass().getDeclaredConstructors()[1].getAnnotations()[0]).specialValue());
+        Assert.assertEquals(1, object.getClass().getDeclaredConstructors()[1].getParameterCount());
+        Assert.assertEquals("java.lang.String", object.getClass().getDeclaredConstructors()[1].getParameterTypes()[0].getTypeName());
+        Assert.assertEquals(1, object.getClass().getDeclaredConstructors()[1].getAnnotations().length);
+        Assert.assertEquals(SimpleAnnotation.class, object.getClass().getDeclaredConstructors()[1].getAnnotations()[0].annotationType());
+        Assert.assertEquals(4, ((SimpleAnnotation) object.getClass().getDeclaredConstructors()[1].getAnnotations()[0]).specialValue());
 
     }
 
     @Test
     public void testGetClassDeclaredMethods() {
 
-        Assert.assertEquals(6, model.getClass().getDeclaredMethods().length);
+        Assert.assertEquals(6, object.getClass().getDeclaredMethods().length);
 
-        List<Method> methods = Arrays.stream(model.getClass().getDeclaredMethods()).sorted((o1, o2) -> {
+        List<Method> methods = Arrays.stream(object.getClass().getDeclaredMethods()).sorted((o1, o2) -> {
             int firstComparison = o1.getName().compareTo(o2.getName());
             if (firstComparison != 0) return firstComparison;
             return o1.getReturnType().getCanonicalName().compareTo(o2.getReturnType().getCanonicalName());
@@ -109,40 +108,40 @@ public class TestReflectionIntrospection {
     @Test
     public void testGetClassDeclaredFieldsAndValues() throws Exception {
 
-        Assert.assertEquals(4, model.getClass().getDeclaredFields().length);
+        Assert.assertEquals(4, object.getClass().getDeclaredFields().length);
 
-        List<Field> fields = Arrays.stream(model.getClass().getDeclaredFields()).sorted(Comparator.comparing(Field::getName)).collect(Collectors.toList());
+        List<Field> fields = Arrays.stream(object.getClass().getDeclaredFields()).sorted(Comparator.comparing(Field::getName)).collect(Collectors.toList());
 
         Assert.assertEquals("constructorField", fields.get(0).getName());
-        Assert.assertNull(fields.get(0).get(model));
+        Assert.assertNull(fields.get(0).get(object));
 
         Assert.assertEquals("privateField", fields.get(1).getName());
         fields.get(1).setAccessible(true);
-        Assert.assertEquals("private final field value", fields.get(1).get(model));
+        Assert.assertEquals("private final field value", fields.get(1).get(object));
         Assert.assertEquals(1, fields.get(1).getAnnotations().length);
         Assert.assertEquals(SimpleAnnotation.class, fields.get(1).getAnnotations()[0].annotationType());
         Assert.assertEquals(3, ((SimpleAnnotation) fields.get(1).getAnnotations()[0]).specialValue());
 
         Assert.assertEquals("privateStaticField", fields.get(2).getName());
         fields.get(2).setAccessible(true);
-        Assert.assertEquals("private static field value", fields.get(2).get(model));
+        Assert.assertEquals("private static field value", fields.get(2).get(object));
 
         Assert.assertEquals("privateStaticFinalField", fields.get(3).getName());
         fields.get(3).setAccessible(true);
-        Assert.assertEquals("private static final field value", fields.get(3).get(model));
+        Assert.assertEquals("private static final field value", fields.get(3).get(object));
 
     }
 
     @Test
     public void testGetClassParent() {
-        Assert.assertEquals(SimpleClassParent.class, model.getClass().getSuperclass());
+        Assert.assertEquals(SimpleClassParent.class, object.getClass().getSuperclass());
     }
 
     @Test
     public void testGetClassModifiers() {
-        Assert.assertTrue(Modifier.isFinal(model.getClass().getModifiers()));
-        Assert.assertTrue(Modifier.isAbstract(model.getClass().getSuperclass().getModifiers()));
-        Assert.assertTrue(Modifier.isPublic(model.getClass().getModifiers()));
+        Assert.assertTrue(Modifier.isFinal(object.getClass().getModifiers()));
+        Assert.assertTrue(Modifier.isAbstract(object.getClass().getSuperclass().getModifiers()));
+        Assert.assertTrue(Modifier.isPublic(object.getClass().getModifiers()));
     }
 
     @Test
