@@ -35,6 +35,7 @@ public class TestReflectionInvokeMethods {
         Method method = SimpleClass.class.getDeclaredMethod("privateStaticMethod", Integer.class);
         method.setAccessible(true);
         Assert.assertEquals(27, method.invoke(model, 3));
+        Assert.assertEquals(27, method.invoke(null, 3));// static methods can be invoked over null
 
     }
 

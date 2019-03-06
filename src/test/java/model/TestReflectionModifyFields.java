@@ -11,19 +11,19 @@ public class TestReflectionModifyFields {
     private SimpleClass model = new SimpleClass();
 
     @Test
-    public void testModifyFieldValue() throws Exception {
+    public void testModifyPrivateFinalFieldValue() throws Exception {
 
         Field field = model.getClass().getDeclaredField("privateField");
 
         field.setAccessible(true);
-        Assert.assertEquals("private field value", field.get(model));
+        Assert.assertEquals("private final field value", field.get(model));
 
         field.set(model, "new private field value");
         Assert.assertEquals("new private field value", field.get(model));
     }
 
-    @Test(expected = java.lang.IllegalAccessException.class)
-    public void testModifyStaticFieldValue() throws Exception {
+    @Test
+    public void testModifyPrivateStaticFieldValue() throws Exception {
 
         Field field = model.getClass().getDeclaredField("privateStaticField");
 
@@ -31,7 +31,26 @@ public class TestReflectionModifyFields {
         Assert.assertEquals("private static field value", field.get(model));
 
         field.set(model, "new private static field value");
-//        Assert.assertEquals("new private static field value", field.get(model));
+        Assert.assertEquals("new private static field value", field.get(model));
+    }
+
+    // STILL FAILS
+    @Test(expected = java.lang.IllegalAccessException.class)
+    public void testModifyPrivateStaticFinalFieldValue() throws Exception {
+
+        Field field = model.getClass().getDeclaredField("privateStaticFinalField");
+
+        field.setAccessible(true);
+        Assert.assertEquals("private static final field value", field.get(model));
+
+        {// reflection over reflection
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        }
+
+        field.set(model, "new private static field value");
+        Assert.assertEquals("new private static final field value", field.get(model));
     }
 
 }

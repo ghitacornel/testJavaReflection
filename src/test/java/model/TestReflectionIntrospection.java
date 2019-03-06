@@ -109,7 +109,7 @@ public class TestReflectionIntrospection {
     @Test
     public void testGetClassDeclaredFieldsAndValues() throws Exception {
 
-        Assert.assertEquals(3, model.getClass().getDeclaredFields().length);
+        Assert.assertEquals(4, model.getClass().getDeclaredFields().length);
 
         List<Field> fields = Arrays.stream(model.getClass().getDeclaredFields()).sorted(Comparator.comparing(Field::getName)).collect(Collectors.toList());
 
@@ -118,7 +118,7 @@ public class TestReflectionIntrospection {
 
         Assert.assertEquals("privateField", fields.get(1).getName());
         fields.get(1).setAccessible(true);
-        Assert.assertEquals("private field value", fields.get(1).get(model));
+        Assert.assertEquals("private final field value", fields.get(1).get(model));
         Assert.assertEquals(1, fields.get(1).getAnnotations().length);
         Assert.assertEquals(SimpleAnnotation.class, fields.get(1).getAnnotations()[0].annotationType());
         Assert.assertEquals(3, ((SimpleAnnotation) fields.get(1).getAnnotations()[0]).specialValue());
@@ -126,6 +126,10 @@ public class TestReflectionIntrospection {
         Assert.assertEquals("privateStaticField", fields.get(2).getName());
         fields.get(2).setAccessible(true);
         Assert.assertEquals("private static field value", fields.get(2).get(model));
+
+        Assert.assertEquals("privateStaticFinalField", fields.get(3).getName());
+        fields.get(3).setAccessible(true);
+        Assert.assertEquals("private static final field value", fields.get(3).get(model));
 
     }
 
@@ -139,6 +143,11 @@ public class TestReflectionIntrospection {
         Assert.assertTrue(Modifier.isFinal(model.getClass().getModifiers()));
         Assert.assertTrue(Modifier.isAbstract(model.getClass().getSuperclass().getModifiers()));
         Assert.assertTrue(Modifier.isPublic(model.getClass().getModifiers()));
+    }
+
+    @Test
+    public void testGetClassJarFile(){
+        System.out.println(Test.class.getProtectionDomain().getCodeSource().getLocation());
     }
 
 }

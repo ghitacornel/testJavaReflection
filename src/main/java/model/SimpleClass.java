@@ -8,8 +8,9 @@ import model.interfaces.SimpleTypedInterface;
 final public class SimpleClass extends SimpleClassParent implements SimpleInterface, SimpleTypedInterface<Integer> {
 
     @SimpleAnnotation(specialValue = 3)
-    final private String privateField = "private field value";
-    public static final String privateStaticField = "private static field value";
+    final private String privateField = "private final field value";
+    private static String privateStaticField = "private static field value";
+    private static final String privateStaticFinalField = "private static final field value";
 
     public String constructorField;
 
