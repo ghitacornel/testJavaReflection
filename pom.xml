@@ -21,6 +21,11 @@
         </plugins>
     </build>
 
+    <scm>
+        <connection>scm:git:https://github.com/ghitacornel/testJavaReflection.git</connection>
+        <developerConnection>scm:git:https://github.com/ghitacornel/testJavaReflection.git</developerConnection>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
