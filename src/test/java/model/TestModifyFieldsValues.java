@@ -55,11 +55,11 @@ public class TestModifyFieldsValues {
         field.setAccessible(true);
         Assert.assertEquals("private static final field value", field.get(object));
 
-        {// reflection over reflection
-            Field modifiersField = Field.class.getDeclaredField("modifiers");
-            modifiersField.setAccessible(true);
-            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-        }
+//        {// reflection over reflection
+//            Field modifiersField = Field.class.getDeclaredField("modifiers");
+//            modifiersField.setAccessible(true);
+//            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+//        }
 
         field.set(object, "new private static field value");
         Assert.assertEquals("new private static final field value", field.get(object));
