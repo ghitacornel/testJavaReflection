@@ -13,7 +13,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TestReflectionIntrospection {
+public class TestIntrospection {
 
     final private Object object = new SimpleClass();
 
@@ -23,9 +23,32 @@ public class TestReflectionIntrospection {
     }
 
     @Test
+    public void testGetClassParent() {
+        Assert.assertEquals(SimpleClassParent.class, object.getClass().getSuperclass());
+    }
+
+    @Test
+    public void testGetClassModifiers() {
+
+        Class<?> aClass = object.getClass();
+
+        Assert.assertTrue(Modifier.isFinal(aClass.getModifiers()));
+        Assert.assertTrue(Modifier.isAbstract(aClass.getSuperclass().getModifiers()));
+        Assert.assertTrue(Modifier.isPublic(aClass.getModifiers()));
+    }
+
+    @Test
+    public void testGetClassJarFile() {
+        System.out.println(Test.class.getProtectionDomain().getCodeSource().getLocation());
+    }
+
+    @Test
     public void testGetClassAnnotations() {
-        Assert.assertEquals(1, object.getClass().getAnnotations().length);
-        Annotation annotation = object.getClass().getAnnotations()[0];
+
+        Class<?> aClass = object.getClass();
+
+        Assert.assertEquals(1, aClass.getAnnotations().length);
+        Annotation annotation = aClass.getAnnotations()[0];
         Assert.assertEquals(SimpleAnnotation.class, annotation.annotationType());
         SimpleAnnotation simpleAnnotation = (SimpleAnnotation) annotation;
         Assert.assertEquals(2, simpleAnnotation.specialValue());
@@ -34,13 +57,15 @@ public class TestReflectionIntrospection {
     @Test
     public void testGetClassInterfaces() {
 
-        Assert.assertEquals(2, object.getClass().getInterfaces().length);
-        Assert.assertEquals(SimpleInterface.class, object.getClass().getInterfaces()[0]);
-        Assert.assertEquals(SimpleTypedInterface.class, object.getClass().getInterfaces()[1]);
+        Class<?> aClass = object.getClass();
 
-        Assert.assertEquals(2, object.getClass().getGenericInterfaces().length);
-        Assert.assertEquals(SimpleInterface.class, object.getClass().getGenericInterfaces()[0]);
-        Assert.assertEquals("model.interfaces.SimpleTypedInterface<java.lang.Integer>", object.getClass().getGenericInterfaces()[1].getTypeName());
+        Assert.assertEquals(2, aClass.getInterfaces().length);
+        Assert.assertEquals(SimpleInterface.class, aClass.getInterfaces()[0]);
+        Assert.assertEquals(SimpleTypedInterface.class, aClass.getInterfaces()[1]);
+
+        Assert.assertEquals(2, aClass.getGenericInterfaces().length);
+        Assert.assertEquals(SimpleInterface.class, aClass.getGenericInterfaces()[0]);
+        Assert.assertEquals("model.interfaces.SimpleTypedInterface<java.lang.Integer>", aClass.getGenericInterfaces()[1].getTypeName());
 
     }
 
@@ -57,26 +82,31 @@ public class TestReflectionIntrospection {
 
     @Test
     public void testGetClassDeclaredConstructors() {
-        Assert.assertEquals(2, object.getClass().getDeclaredConstructors().length);
+
+        Class<?> aClass = object.getClass();
+
+        Assert.assertEquals(2, aClass.getDeclaredConstructors().length);
 
         // no argument constructor
-        Assert.assertEquals(0, object.getClass().getDeclaredConstructors()[0].getParameterCount());
+        Assert.assertEquals(0, aClass.getDeclaredConstructors()[0].getParameterCount());
 
         // with argument private and annotated constructor
-        Assert.assertEquals(1, object.getClass().getDeclaredConstructors()[1].getParameterCount());
-        Assert.assertEquals("java.lang.String", object.getClass().getDeclaredConstructors()[1].getParameterTypes()[0].getTypeName());
-        Assert.assertEquals(1, object.getClass().getDeclaredConstructors()[1].getAnnotations().length);
-        Assert.assertEquals(SimpleAnnotation.class, object.getClass().getDeclaredConstructors()[1].getAnnotations()[0].annotationType());
-        Assert.assertEquals(4, ((SimpleAnnotation) object.getClass().getDeclaredConstructors()[1].getAnnotations()[0]).specialValue());
+        Assert.assertEquals(1, aClass.getDeclaredConstructors()[1].getParameterCount());
+        Assert.assertEquals("java.lang.String", aClass.getDeclaredConstructors()[1].getParameterTypes()[0].getTypeName());
+        Assert.assertEquals(1, aClass.getDeclaredConstructors()[1].getAnnotations().length);
+        Assert.assertEquals(SimpleAnnotation.class, aClass.getDeclaredConstructors()[1].getAnnotations()[0].annotationType());
+        Assert.assertEquals(4, ((SimpleAnnotation) aClass.getDeclaredConstructors()[1].getAnnotations()[0]).specialValue());
 
     }
 
     @Test
     public void testGetClassDeclaredMethods() {
 
-        Assert.assertEquals(6, object.getClass().getDeclaredMethods().length);
+        Class<?> aClass = object.getClass();
 
-        List<Method> methods = Arrays.stream(object.getClass().getDeclaredMethods()).sorted((o1, o2) -> {
+        Assert.assertEquals(6, aClass.getDeclaredMethods().length);
+
+        List<Method> methods = Arrays.stream(aClass.getDeclaredMethods()).sorted((o1, o2) -> {
             int firstComparison = o1.getName().compareTo(o2.getName());
             if (firstComparison != 0) return firstComparison;
             return o1.getReturnType().getCanonicalName().compareTo(o2.getReturnType().getCanonicalName());
@@ -108,9 +138,11 @@ public class TestReflectionIntrospection {
     @Test
     public void testGetClassDeclaredFieldsAndValues() throws Exception {
 
-        Assert.assertEquals(4, object.getClass().getDeclaredFields().length);
+        Class<?> aClass = object.getClass();
+        
+        Assert.assertEquals(4, aClass.getDeclaredFields().length);
 
-        List<Field> fields = Arrays.stream(object.getClass().getDeclaredFields()).sorted(Comparator.comparing(Field::getName)).collect(Collectors.toList());
+        List<Field> fields = Arrays.stream(aClass.getDeclaredFields()).sorted(Comparator.comparing(Field::getName)).collect(Collectors.toList());
 
         Assert.assertEquals("constructorField", fields.get(0).getName());
         Assert.assertNull(fields.get(0).get(object));
@@ -130,23 +162,6 @@ public class TestReflectionIntrospection {
         fields.get(3).setAccessible(true);
         Assert.assertEquals("private static final field value", fields.get(3).get(object));
 
-    }
-
-    @Test
-    public void testGetClassParent() {
-        Assert.assertEquals(SimpleClassParent.class, object.getClass().getSuperclass());
-    }
-
-    @Test
-    public void testGetClassModifiers() {
-        Assert.assertTrue(Modifier.isFinal(object.getClass().getModifiers()));
-        Assert.assertTrue(Modifier.isAbstract(object.getClass().getSuperclass().getModifiers()));
-        Assert.assertTrue(Modifier.isPublic(object.getClass().getModifiers()));
-    }
-
-    @Test
-    public void testGetClassJarFile(){
-        System.out.println(Test.class.getProtectionDomain().getCodeSource().getLocation());
     }
 
 }

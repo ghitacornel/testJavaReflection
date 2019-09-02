@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import java.lang.reflect.Constructor;
 
-public class TestReflectionInvokeConstructors {
+public class TestInvokeConstructors {
 
     @Test
     public void testInvokeConstructor() throws Exception {

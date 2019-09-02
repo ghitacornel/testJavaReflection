@@ -6,32 +6,44 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class TestReflectionModifyFields {
+public class TestModifyFieldsValues {
 
     private Object object = new SimpleClass();
 
     @Test
     public void testModifyPrivateFinalFieldValue() throws Exception {
 
+        // get field
         Field field = object.getClass().getDeclaredField("privateField");
 
+        // make field accessible
         field.setAccessible(true);
+
+        // get field value
         Assert.assertEquals("private final field value", field.get(object));
 
+        // set field value
         field.set(object, "new private field value");
         Assert.assertEquals("new private field value", field.get(object));
+
     }
 
     @Test
     public void testModifyPrivateStaticFieldValue() throws Exception {
 
+        // get field
         Field field = object.getClass().getDeclaredField("privateStaticField");
 
+        // make field accessible
         field.setAccessible(true);
+
+        // get field value
         Assert.assertEquals("private static field value", field.get(object));
 
+        // set field value
         field.set(object, "new private static field value");
         Assert.assertEquals("new private static field value", field.get(object));
+
     }
 
     // STILL FAILS
