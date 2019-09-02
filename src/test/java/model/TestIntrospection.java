@@ -19,12 +19,15 @@ public class TestIntrospection {
 
     @Test
     public void testGetClass() {
-        Assert.assertEquals(SimpleClass.class, object.getClass());
+        Class<?> aClass = object.getClass();
+        Assert.assertEquals(SimpleClass.class, aClass);
     }
 
     @Test
     public void testGetClassParent() {
-        Assert.assertEquals(SimpleClassParent.class, object.getClass().getSuperclass());
+        Class<?> aClass = object.getClass();
+        Class<?> aClassSuperclass = aClass.getSuperclass();
+        Assert.assertEquals(SimpleClassParent.class, aClassSuperclass);
     }
 
     @Test
@@ -46,9 +49,10 @@ public class TestIntrospection {
     public void testGetClassAnnotations() {
 
         Class<?> aClass = object.getClass();
+        Annotation[] annotations = aClass.getAnnotations();
 
-        Assert.assertEquals(1, aClass.getAnnotations().length);
-        Annotation annotation = aClass.getAnnotations()[0];
+        Assert.assertEquals(1, annotations.length);
+        Annotation annotation = annotations[0];
         Assert.assertEquals(SimpleAnnotation.class, annotation.annotationType());
         SimpleAnnotation simpleAnnotation = (SimpleAnnotation) annotation;
         Assert.assertEquals(2, simpleAnnotation.specialValue());
@@ -58,10 +62,11 @@ public class TestIntrospection {
     public void testGetClassInterfaces() {
 
         Class<?> aClass = object.getClass();
+        Class<?>[] interfaces = aClass.getInterfaces();
 
-        Assert.assertEquals(2, aClass.getInterfaces().length);
-        Assert.assertEquals(SimpleInterface.class, aClass.getInterfaces()[0]);
-        Assert.assertEquals(SimpleTypedInterface.class, aClass.getInterfaces()[1]);
+        Assert.assertEquals(2, interfaces.length);
+        Assert.assertEquals(SimpleInterface.class, interfaces[0]);
+        Assert.assertEquals(SimpleTypedInterface.class, interfaces[1]);
 
         Assert.assertEquals(2, aClass.getGenericInterfaces().length);
         Assert.assertEquals(SimpleInterface.class, aClass.getGenericInterfaces()[0]);
@@ -72,7 +77,10 @@ public class TestIntrospection {
     @Test
     public void testGetClassInterfaceType() {
 
-        Type type = object.getClass().getGenericInterfaces()[1];
+        Class<?> aClass = object.getClass();
+        Type[] genericInterfaces = aClass.getGenericInterfaces();
+
+        Type type = genericInterfaces[1];
         ParameterizedType parameterizedType = (ParameterizedType) type;
         Assert.assertEquals("model.interfaces.SimpleTypedInterface<java.lang.Integer>", parameterizedType.getTypeName());
         Assert.assertEquals("java.lang.Integer", parameterizedType.getActualTypeArguments()[0].getTypeName());
@@ -84,18 +92,19 @@ public class TestIntrospection {
     public void testGetClassDeclaredConstructors() {
 
         Class<?> aClass = object.getClass();
+        Constructor<?>[] declaredConstructors = aClass.getDeclaredConstructors();
 
-        Assert.assertEquals(2, aClass.getDeclaredConstructors().length);
+        Assert.assertEquals(2, declaredConstructors.length);
 
         // no argument constructor
-        Assert.assertEquals(0, aClass.getDeclaredConstructors()[0].getParameterCount());
+        Assert.assertEquals(0, declaredConstructors[0].getParameterCount());
 
         // with argument private and annotated constructor
-        Assert.assertEquals(1, aClass.getDeclaredConstructors()[1].getParameterCount());
-        Assert.assertEquals("java.lang.String", aClass.getDeclaredConstructors()[1].getParameterTypes()[0].getTypeName());
-        Assert.assertEquals(1, aClass.getDeclaredConstructors()[1].getAnnotations().length);
-        Assert.assertEquals(SimpleAnnotation.class, aClass.getDeclaredConstructors()[1].getAnnotations()[0].annotationType());
-        Assert.assertEquals(4, ((SimpleAnnotation) aClass.getDeclaredConstructors()[1].getAnnotations()[0]).specialValue());
+        Assert.assertEquals(1, declaredConstructors[1].getParameterCount());
+        Assert.assertEquals("java.lang.String", declaredConstructors[1].getParameterTypes()[0].getTypeName());
+        Assert.assertEquals(1, declaredConstructors[1].getAnnotations().length);
+        Assert.assertEquals(SimpleAnnotation.class, declaredConstructors[1].getAnnotations()[0].annotationType());
+        Assert.assertEquals(4, ((SimpleAnnotation) declaredConstructors[1].getAnnotations()[0]).specialValue());
 
     }
 
@@ -103,14 +112,12 @@ public class TestIntrospection {
     public void testGetClassDeclaredMethods() {
 
         Class<?> aClass = object.getClass();
+        Method[] declaredMethods = aClass.getDeclaredMethods();
 
-        Assert.assertEquals(6, aClass.getDeclaredMethods().length);
+        Assert.assertEquals(6, declaredMethods.length);
 
-        List<Method> methods = Arrays.stream(aClass.getDeclaredMethods()).sorted((o1, o2) -> {
-            int firstComparison = o1.getName().compareTo(o2.getName());
-            if (firstComparison != 0) return firstComparison;
-            return o1.getReturnType().getCanonicalName().compareTo(o2.getReturnType().getCanonicalName());
-        }).collect(Collectors.toList());
+        // sort methods
+        List<Method> methods = Arrays.stream(declaredMethods).sorted(Comparator.comparing(Method::getName).thenComparing(o -> o.getReturnType().getCanonicalName())).collect(Collectors.toList());
 
         Assert.assertEquals("executeTypedBusiness", methods.get(0).getName());
         Assert.assertEquals(Integer.class, methods.get(0).getReturnType());
@@ -139,10 +146,12 @@ public class TestIntrospection {
     public void testGetClassDeclaredFieldsAndValues() throws Exception {
 
         Class<?> aClass = object.getClass();
-        
-        Assert.assertEquals(4, aClass.getDeclaredFields().length);
+        Field[] declaredFields = aClass.getDeclaredFields();
 
-        List<Field> fields = Arrays.stream(aClass.getDeclaredFields()).sorted(Comparator.comparing(Field::getName)).collect(Collectors.toList());
+        Assert.assertEquals(4, declaredFields.length);
+
+        // sort fields
+        List<Field> fields = Arrays.stream(declaredFields).sorted(Comparator.comparing(Field::getName)).collect(Collectors.toList());
 
         Assert.assertEquals("constructorField", fields.get(0).getName());
         Assert.assertNull(fields.get(0).get(object));
