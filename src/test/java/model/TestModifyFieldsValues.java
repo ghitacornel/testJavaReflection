@@ -47,12 +47,19 @@ public class TestModifyFieldsValues {
     }
 
     // STILL FAILS
-    @Test(expected = java.lang.IllegalAccessException.class)
+    @Test(expected = java.lang.NoSuchFieldException.class)
     public void testModifyPrivateStaticFinalFieldValue() throws Exception {
 
         Field field = object.getClass().getDeclaredField("privateStaticFinalField");
 
         field.setAccessible(true);
+
+        {
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        }
+
         Assert.assertEquals("private static final field value", field.get(object));
 
 //        {// reflection over reflection
