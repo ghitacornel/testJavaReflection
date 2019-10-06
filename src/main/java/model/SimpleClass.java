@@ -4,6 +4,7 @@ import model.annotations.SimpleAnnotation;
 import model.interfaces.SimpleInterface;
 import model.interfaces.SimpleTypedInterface;
 
+@SuppressWarnings(value = {})// has no effect since it is retained only at source code
 @SimpleAnnotation(specialValue = 2)
 final public class SimpleClass extends SimpleClassParent implements SimpleInterface, SimpleTypedInterface<Integer> {
 
