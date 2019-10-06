@@ -19,7 +19,7 @@ public class TestReflectionIntrospection {
 
     @Test
     public void testGetClass() {
-        Assert.assertEquals(SimpleClass.class, object.getClass());
+        Assert.assertSame(SimpleClass.class, object.getClass());
     }
 
     @Test
