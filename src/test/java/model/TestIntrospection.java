@@ -20,14 +20,14 @@ public class TestIntrospection {
     @Test
     public void testGetClass() {
         Class<?> aClass = object.getClass();
-        Assert.assertEquals(SimpleClass.class, aClass);
+        Assert.assertSame(SimpleClass.class, aClass);
     }
 
     @Test
     public void testGetClassParent() {
         Class<?> aClass = object.getClass();
         Class<?> aClassSuperclass = aClass.getSuperclass();
-        Assert.assertEquals(SimpleClassParent.class, aClassSuperclass);
+        Assert.assertSame(SimpleClassParent.class, aClassSuperclass);
     }
 
     @Test
