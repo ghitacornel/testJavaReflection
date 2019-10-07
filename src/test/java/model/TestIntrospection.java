@@ -13,6 +13,16 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 1 INTROSPECTION<br>
+ * The ability to obtain information about a class type<br>
+ * <p>
+ * For class scanning :
+ *
+ * @See https://github.com/google/guava
+ * @See https://github.com/classgraph/classgraph/wiki/Code-examples
+ * @See https://github.com/ronmamo/reflections
+ */
 public class TestIntrospection {
 
     final private Object object = new SimpleClass();

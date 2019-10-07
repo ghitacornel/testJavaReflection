@@ -5,6 +5,9 @@ import org.junit.Test;
 
 import java.lang.reflect.Constructor;
 
+/**
+ * 2 CONSTRUCTOR INVOCATION
+ */
 public class TestInvokeConstructors {
 
     @Test

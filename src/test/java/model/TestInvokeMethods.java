@@ -8,6 +8,9 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 
+/**
+ * 3 METHOD INVOCATION
+ */
 public class TestInvokeMethods {
 
     private SimpleClass model = new SimpleClass();
