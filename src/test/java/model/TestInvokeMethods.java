@@ -17,6 +17,9 @@ public class TestInvokeMethods {
 
         // get method
         Method method = SimpleClass.class.getDeclaredMethod("publicMethod", String.class);
+        // see getDeclaredMethods()
+        // see getMethods()
+        // see getMethod()
 
         // invoke method
         Assert.assertEquals(model.publicMethod("argument value"), method.invoke(model, "argument value"));

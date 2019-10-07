@@ -14,6 +14,9 @@ public class TestInvokeConstructors {
 
         // get constructor
         Constructor<SimpleClass> constructor = SimpleClass.class.getConstructor();
+        // see getConstructors();
+        // see getDeclaredConstructors();
+        // see getDeclaredConstructor();
 
         // invoke constructor
         SimpleClass instance = constructor.newInstance();

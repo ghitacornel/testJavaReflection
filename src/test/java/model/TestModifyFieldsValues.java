@@ -15,6 +15,9 @@ public class TestModifyFieldsValues {
 
         // get field
         Field field = object.getClass().getDeclaredField("privateField");
+        // see getDeclaredFields()
+        // see getFields()
+        // see getField()
 
         // make field accessible
         field.setAccessible(true);
