@@ -23,5 +23,8 @@ public class TestGetGenericType {
         Assert.assertEquals(Integer.class.getCanonicalName(), actualTypeArguments[0].getTypeName());
         Assert.assertEquals(String.class.getCanonicalName(), actualTypeArguments[1].getTypeName());
 
+        String result = object.g();
+        Assert.assertEquals("[class java.lang.Integer, class java.lang.String]", result);
+
     }
 }
