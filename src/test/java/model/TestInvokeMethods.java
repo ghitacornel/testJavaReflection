@@ -8,6 +8,9 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 
+/**
+ * 3 METHOD INVOCATION
+ */
 public class TestInvokeMethods {
 
     private SimpleClass model = new SimpleClass();
@@ -17,6 +20,9 @@ public class TestInvokeMethods {
 
         // get method
         Method method = SimpleClass.class.getDeclaredMethod("publicMethod", String.class);
+        // see getDeclaredMethods()
+        // see getMethods()
+        // see getMethod()
 
         // invoke method
         Assert.assertEquals(model.publicMethod("argument value"), method.invoke(model, "argument value"));

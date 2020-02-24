@@ -5,6 +5,9 @@ import org.junit.Test;
 
 import java.lang.reflect.Constructor;
 
+/**
+ * 2 CONSTRUCTOR INVOCATION
+ */
 public class TestInvokeConstructors {
 
     @Test
@@ -14,6 +17,9 @@ public class TestInvokeConstructors {
 
         // get constructor
         Constructor<SimpleClass> constructor = SimpleClass.class.getConstructor();
+        // see getConstructors();
+        // see getDeclaredConstructors();
+        // see getDeclaredConstructor();
 
         // invoke constructor
         SimpleClass instance = constructor.newInstance();

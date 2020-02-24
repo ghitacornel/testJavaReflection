@@ -6,6 +6,9 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+/**
+ * 4 OBTAIN AND CHANGE A FIELD VALUE
+ */
 public class TestModifyFieldsValues {
 
     private Object object = new SimpleClass();
@@ -15,6 +18,9 @@ public class TestModifyFieldsValues {
 
         // get field
         Field field = object.getClass().getDeclaredField("privateField");
+        // see getDeclaredFields()
+        // see getFields()
+        // see getField()
 
         // make field accessible
         field.setAccessible(true);
@@ -39,10 +45,15 @@ public class TestModifyFieldsValues {
 
         // get field value
         Assert.assertEquals("private static field value", field.get(object));
+        Assert.assertEquals("private static field value", field.get(null));// static works on null also
 
         // set field value
-        field.set(object, "new private static field value");
-        Assert.assertEquals("new private static field value", field.get(object));
+        field.set(object, "new private static field value 1");
+        Assert.assertEquals("new private static field value 1", field.get(object));
+
+        // set field value
+        field.set(null, "new private static field value 2");// static works on null also
+        Assert.assertEquals("new private static field value 2", field.get(null));// static works on null also
 
     }
 
