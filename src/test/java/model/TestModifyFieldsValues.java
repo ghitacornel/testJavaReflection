@@ -11,7 +11,7 @@ import java.lang.reflect.Modifier;
  */
 public class TestModifyFieldsValues {
 
-    private Object object = new SimpleClass();
+    private final Object object = new SimpleClass();
 
     @Test
     public void testModifyPrivateFinalFieldValue() throws Exception {

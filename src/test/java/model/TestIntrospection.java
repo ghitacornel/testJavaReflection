@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
  * <p>
  * For class scanning :
  *
- * @See https://github.com/google/guava
- * @See https://github.com/classgraph/classgraph/wiki/Code-examples
- * @See https://github.com/ronmamo/reflections
+ * @see <a href="https://github.com/google/guava">...</a>
+ * @see <a href="https://github.com/classgraph/classgraph/wiki/Code-examples">...</a>
+ * @see <a href="https://github.com/ronmamo/reflections">...</a>
  */
 public class TestIntrospection {
 

@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
  */
 public class TestInvokeMethods {
 
-    private SimpleClass model = new SimpleClass();
+    private final SimpleClass model = new SimpleClass();
 
     @Test
     public void testInvokePublicMethod() throws Exception {

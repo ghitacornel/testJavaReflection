@@ -10,7 +10,7 @@ import java.lang.reflect.Type;
 public class TestGetGenericType {
 
     @Test
-    public void testObtainGeneric() throws Exception {
+    public void testObtainGeneric() {
         GenericClass object = new GenericClass();
 
         Type[] types = object.getClass().getGenericInterfaces();
